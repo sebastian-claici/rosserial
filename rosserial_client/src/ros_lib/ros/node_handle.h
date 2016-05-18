@@ -200,21 +200,8 @@ namespace ros {
       while( true )
       {
         int data = hardware_.read();
-        if( data < 0 ) {
-#if defined(USE_WIFICON)
-          if (!hardware_.isConnectionUp()) {
-            for (int try = 0; try < 3; ++try) {
-              if (hardware_.restoreConnection())
-                break;
-            }
-            configured_ = false;
-            return -3;
-          } else
-            break;
-#else
+        if( data < 0 ) 
           break;
-#endif
-        }
         checksum_ += data;
         if( mode_ == MODE_MESSAGE ){        /* message data being recieved */
           message_in[index_++] = data;

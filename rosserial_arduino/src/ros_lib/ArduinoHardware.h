@@ -100,10 +100,8 @@ public:
     iostream = new WiFiClient();
     strcpy(this->hostname, hostname);
 
-    int tries = 0;
-    while (!iostream->connect(hostname, ROSSERIAL_PORTNUM) && tries < 50) {
-      delay(50);
-      tries += 1;
+    while (!iostream->connect(hostname, ROSSERIAL_PORTNUM)) {
+      delay(1000);
     }
   }
 #else
@@ -116,28 +114,16 @@ public:
   }
 #endif
 
-  int read(){return iostream->read();};
+  int read() {
+    return iostream->read();
+  }
+  
   void write(uint8_t* data, int length){
     for(int i=0; i<length; i++)
       iostream->write(data[i]);
   }
 
   unsigned long time(){return millis();}
-
-#if defined(USE_WIFICON)
-  bool isConnectionUp() {
-    if (iostream->connected()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  bool restoreConnection() {
-    iostream->stop();
-    return iostream->connect(this->hostname, ROSSERIAL_PORTNUM);
-  }
-#endif
 
 protected:
 #if defined(USE_WIFICON)
